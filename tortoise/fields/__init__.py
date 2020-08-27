@@ -15,6 +15,7 @@ from tortoise.fields.data import (
     SmallIntField,
     TextField,
     TimeDeltaField,
+    TimeField,
     UUIDField,
 )
 from tortoise.fields.relational import (

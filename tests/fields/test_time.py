@@ -129,6 +129,46 @@ class TestDateFields(test.TestCase):
         self.assertEqual(obj.date, today)
 
 
+class TestTimeFields(test.TestCase):
+    async def test_empty(self):
+        with self.assertRaises(IntegrityError):
+            await testmodels.TimeFields.create()
+
+    async def test_create(self):
+        now = datetime.now().time()
+        obj0 = await testmodels.TimeFields.create(time=now)
+        obj = await testmodels.TimeFields.get(id=obj0.id)
+        self.assertEqual(obj.time, now)
+        self.assertEqual(obj.time_null, None)
+        await obj.save()
+        obj2 = await testmodels.TimeFields.get(id=obj.id)
+        self.assertEqual(obj, obj2)
+
+    async def test_cast(self):
+        now = datetime.now()
+        obj0 = await testmodels.TimeFields.create(time=now)
+        obj = await testmodels.TimeFields.get(id=obj0.id)
+        self.assertEqual(obj.time, now)
+
+    async def test_values(self):
+        now = datetime.now()
+        obj0 = await testmodels.TimeFields.create(time=now)
+        values = await testmodels.TimeFields.get(id=obj0.id).values("time")
+        self.assertEqual(values[0]["time"], now)
+
+    async def test_values_list(self):
+        now = datetime.now()
+        obj0 = await testmodels.TimeFields.create(time=now)
+        values = await testmodels.TimeFields.get(id=obj0.id).values_list("time", flat=True)
+        self.assertEqual(values[0], now)
+
+    async def test_get(self):
+        now = datetime.now()
+        await testmodels.TimeFields.create(time=now)
+        obj = await testmodels.TimeFields.get(time=now)
+        self.assertEqual(obj.time, now)
+
+
 class TestTimeDeltaFields(test.TestCase):
     async def test_empty(self):
         with self.assertRaises(IntegrityError):

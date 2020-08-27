@@ -39,6 +39,7 @@ __all__ = (
     "JSONField",
     "SmallIntField",
     "TextField",
+    "TimeField",
     "TimeDeltaField",
     "UUIDField",
 )
@@ -334,6 +335,20 @@ class DateField(Field, datetime.date):
         if value is None or isinstance(value, datetime.date):
             return value
         return parse_datetime(value).date()
+
+
+class TimeField(Field, datetime.time):
+    """
+    Time field
+    """
+
+    skip_to_python_if_native = True
+    SQL_TYPE = "TIME"
+
+    def to_python_value(self, value: Any) -> Optional[datetime.time]:
+        if value is None or isinstance(value, datetime.time):
+            return value
+        return parse_datetime(value).time()
 
 
 class TimeDeltaField(Field, datetime.timedelta):
